@@ -38,6 +38,7 @@ window.Stormline.Game = (function () {
   let deliveredCount = 0;
   let currentLevelScore = 0;
   let gameOverReason = "";
+  let spawnGraceTimer = 1.0;
 
   // Level Clear Score breakdown
   let lastScoreBreakdown = {
@@ -156,6 +157,7 @@ window.Stormline.Game = (function () {
     currentLevelScore = 0;
     weatherTimer = 0;
     gameOverReason = "";
+    spawnGraceTimer = 1.0;
 
     setState(STATES.PLAYING);
   }
@@ -193,6 +195,12 @@ window.Stormline.Game = (function () {
       Audio.updateRotor(0);
       clearJustPressed();
       return;
+    }
+
+    // Spawn Grace Period: immune to collision damage and lock hull to 100%
+    if (spawnGraceTimer > 0) {
+      spawnGraceTimer = Math.max(0, spawnGraceTimer - dt);
+      hull = 100;
     }
 
     // --- Weather & Shifting Wind Update ---
@@ -315,6 +323,8 @@ window.Stormline.Game = (function () {
     // Drone Platform Collisions
     platforms.forEach(plat => {
       resolveBoxCollision(drone, plat, (impactSpeed) => {
+        if (spawnGraceTimer > 0) return; // Immune to spawn collision damage
+
         if (impactSpeed > 115) {
           const dmg = Math.floor((impactSpeed - 115) * 0.22) + 2;
           hull = Math.max(0, hull - dmg);
@@ -323,6 +333,7 @@ window.Stormline.Game = (function () {
           window.Stormline.Renderer.spawnSparks(drone.x, drone.y + halfH, 8);
 
           if (hull <= 0) {
+            hull = 0;
             triggerGameOver("HULL INTEGRITY COMPROMISED // STRUCTURAL FAILURE");
           }
         }
@@ -532,6 +543,8 @@ window.Stormline.Game = (function () {
           // Check if all required cargo is delivered
           if (deliveredCount >= activeLevel.requiredDeliveries) {
             completeLevel();
+            clearJustPressed();
+            return;
           }
         }
       }
@@ -601,6 +614,10 @@ window.Stormline.Game = (function () {
 
   // Trigger Mission Failure
   function triggerGameOver(reason) {
+    if (currentState !== STATES.PLAYING) return;
+    const remainingCargo = activeLevel ? (activeLevel.requiredDeliveries - deliveredCount) : 1;
+    if (remainingCargo <= 0) return;
+
     gameOverReason = reason;
     Audio.playGameOver();
     setState(STATES.GAME_OVER);
@@ -608,6 +625,18 @@ window.Stormline.Game = (function () {
 
   // Level Clear calculation and progression
   function completeLevel() {
+    // Immediately lock drone movement and stop flight physics
+    drone.vx = 0;
+    drone.vy = 0;
+    drone.ax = 0;
+    drone.ay = 0;
+    drone.thrustInput = { up: false, down: false, left: false, right: false };
+    drone.isThrusting = false;
+    if (drone.tetheredCargo) {
+      drone.tetheredCargo = null;
+    }
+    Audio.updateRotor(0);
+
     Audio.playVictory();
 
     const cratesScore = deliveredCount * 1000;
@@ -626,13 +655,9 @@ window.Stormline.Game = (function () {
       totalLevelScore
     };
 
-    setTimeout(() => {
-      if (currentLevelIndex >= Levels.length - 1) {
-        setState(STATES.VICTORY);
-      } else {
-        setState(STATES.LEVEL_CLEAR);
-      }
-    }, 900);
+    // Immediately lock state to LEVEL_CLEAR or VICTORY
+    const targetState = (currentLevelIndex >= Levels.length - 1) ? STATES.VICTORY : STATES.LEVEL_CLEAR;
+    setState(targetState);
   }
 
   function advanceToNextLevel() {

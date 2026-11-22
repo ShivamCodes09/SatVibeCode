@@ -186,16 +186,26 @@ window.Stormline.Main = (function () {
     }
   }
 
+  // Synchronously hide all overlays before activating the target state overlay
+  function hideAllOverlays() {
+    const overlays = [
+      overlayTitle,
+      overlayPause,
+      overlayLevelClear,
+      overlayVictory,
+      overlayGameOver
+    ];
+    overlays.forEach(el => {
+      if (el) el.classList.add("hidden");
+    });
+  }
+
   // Handle Game State Transitions and Overlay Visibilities
   function onGameStateChanged(state) {
     const STATES = Game.STATES;
 
-    // Hide all overlays first
-    if (overlayTitle) overlayTitle.classList.add("hidden");
-    if (overlayPause) overlayPause.classList.add("hidden");
-    if (overlayLevelClear) overlayLevelClear.classList.add("hidden");
-    if (overlayVictory) overlayVictory.classList.add("hidden");
-    if (overlayGameOver) overlayGameOver.classList.add("hidden");
+    // Synchronously hide all overlays first to guarantee no overlapping or flashing screens
+    hideAllOverlays();
 
     if (state === STATES.TITLE) {
       if (overlayTitle) overlayTitle.classList.remove("hidden");

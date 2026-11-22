@@ -294,12 +294,14 @@ window.Stormline.Renderer = (function () {
         }
       });
 
-      // Label at top left of wind zone
+      // Label at top left (or custom offset) of wind zone
       ctx.fillStyle = isTurbulent ? "#ffb700" : "#00f0ff";
       ctx.font = "bold 10px Consolas, monospace";
       ctx.letterSpacing = "2px";
       const forceDisplay = `${Math.round(Math.abs(fx))} KTS`;
-      ctx.fillText(`${wz.label} [${forceDisplay} ${fx > 0 ? "EAST" : "WEST"}]`, wz.x + 12, wz.y + 20);
+      const labelX = wz.labelX !== undefined ? wz.labelX : wz.x + 12;
+      const labelY = wz.labelY !== undefined ? wz.labelY : wz.y + 20;
+      ctx.fillText(`${wz.label} [${forceDisplay} ${fx > 0 ? "EAST" : "WEST"}]`, labelX, labelY);
 
       ctx.restore();
     });
@@ -359,11 +361,12 @@ window.Stormline.Renderer = (function () {
         ctx.stroke();
       }
 
-      // Platform label
+      // Platform label placed cleanly below deck so it never collides with drop pad markers
       if (plat.label) {
-        ctx.fillStyle = "rgba(139, 155, 180, 0.4)";
+        ctx.fillStyle = "rgba(139, 155, 180, 0.45)";
         ctx.font = "bold 9px Consolas, monospace";
-        ctx.fillText(plat.label, plat.x + 12, plat.y + 24);
+        const labelY = plat.h > 120 ? plat.y + 54 : plat.y + Math.min(24, plat.h / 2 + 4);
+        ctx.fillText(plat.label, plat.x + 14, labelY);
       }
 
       ctx.restore();
@@ -456,10 +459,12 @@ window.Stormline.Renderer = (function () {
         ctx.textAlign = "left";
       }
 
-      // Label below pad
+      // Target LZ Label cleanly centered under the pad deck (offset from platform name)
       ctx.fillStyle = padColor;
       ctx.font = "bold 10px Consolas, monospace";
-      ctx.fillText(dropZone.label || "TARGET LZ", dropZone.x + 14, dropZone.y + 26);
+      ctx.textAlign = "center";
+      ctx.fillText(`[ ${dropZone.label || "TARGET LZ"} ]`, dropZone.x + dropZone.w / 2, dropZone.y + 22);
+      ctx.textAlign = "left";
 
       ctx.restore();
     }

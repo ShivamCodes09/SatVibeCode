@@ -1,5 +1,7 @@
 # STORMLINE // Adverse Weather Emergency Rescue Drone
 
+> **Live Demo:** [https://your-username.github.io/stormline](https://your-username.github.io/stormline) *(Deploy via GitHub Pages or open index.html directly)*
+
 **STORMLINE** is an original 2D side-view browser game where you pilot a high-lift emergency rescue drone through severe storm fronts to transport essential cargo to designated drop pads.
 
 Built with **pure HTML5 Canvas, CSS, and vanilla JavaScript** with zero external dependencies, zero build steps, and universal browser compatibility.
@@ -60,7 +62,7 @@ http://localhost:8000
 - **Wind Zones:** Active crosswind fields that push both the drone and carried cargo. Visible wind ribbons display current wind vectors and turbulence.
 - **Shifting Gusts:** In storm sectors, wind direction and intensity periodically oscillate and surge.
 - **Battery Reserve:** Drains continuously during flight, accelerating during heavy thruster burns and heavy cargo airlifts. A low-battery alarm triggers below 20%.
-- **Hull Integrity:** Collisions with terrain or cavern roofs above 115 px/s deal structural damage, accompanied by impact thuds and screen shake.
+- **Hull Integrity:** Collisions with terrain or cavern roofs above 115 px/s deal structural damage, accompanied by impact thuds and screen shake. A 1.0-second spawn grace period ensures every mission reliably commences at 100% hull integrity.
 - **Mission Timer:** Complete all required deliveries before the countdown timer expires.
 
 ---

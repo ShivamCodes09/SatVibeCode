@@ -16,7 +16,7 @@ window.Stormline.Levels = [
     name: "Ridge Outpost",
     subtitle: "Calm Dusk // Training Sector",
     briefing: "Airlift 2 Standard Medical crates across the mountain gap to Landing Pad Alpha.",
-    droneSpawn: { x: 160, y: 310 },
+    droneSpawn: { x: 170, y: 300 },
     budget: { time: 90, battery: 100 },
     requiredDeliveries: 2,
     weather: {
@@ -85,7 +85,7 @@ window.Stormline.Levels = [
     name: "Crosswind Valley",
     subtitle: "Gale Front // Heavy Lift Operations",
     briefing: "Crosswind gusts buffeting the gorge. Deliver 1 Light Medical crate and 1 Heavy Field Generator.",
-    droneSpawn: { x: 140, y: 220 },
+    droneSpawn: { x: 170, y: 200 },
     budget: { time: 100, battery: 100 },
     requiredDeliveries: 2,
     weather: {
@@ -164,7 +164,7 @@ window.Stormline.Levels = [
     name: "Eye of the Storm",
     subtitle: "Severe Tempest // Critical Extraction",
     briefing: "Violent shifting storm winds. Transport 1 Heavy Generator, 1 Fragile Quantum Core, and 1 Standard Supply.",
-    droneSpawn: { x: 130, y: 170 },
+    droneSpawn: { x: 160, y: 150 },
     budget: { time: 115, battery: 100 },
     requiredDeliveries: 3,
     weather: {
@@ -209,7 +209,9 @@ window.Stormline.Levels = [
         forceY: -15,
         shifting: true,
         shiftPeriod: 4.5,
-        label: "TEMPEST GUST"
+        label: "TEMPEST GUST",
+        labelX: 300,
+        labelY: 195
       }
     ],
     cargo: [
