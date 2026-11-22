@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STORMLINE // Emergency Rescue Drone</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="viewport-wrapper">
+    <div id="game-container">
+      <canvas id="game-canvas" width="1280" height="720"></canvas>
+
+      <!-- Title Overlay -->
+      <div id="overlay-title" class="overlay">
+        <div class="modal-card">
+          <span class="title-tag">Emergency Tactical Ops</span>
+          <h1 class="game-title">STORMLINE</h1>
+          <p class="subtitle">Adverse Weather Rescue Drone</p>
+          <p class="mission-desc">
+            Severe gale fronts have isolated research outposts. Pilot the heavy-lift emergency drone to airlift cargo crates to designated drop pads before battery reserves or hull structural integrity fail.
+          </p>
+
+          <div class="controls-guide">
+            <div class="control-item">
+              <span class="control-label">Flight Thrusters</span>
+              <span class="control-key">W A S D / Arrows</span>
+            </div>
+            <div class="control-item">
+              <span class="control-label">Magnetic Tether</span>
+              <span class="control-key">SPACE / E</span>
+            </div>
+            <div class="control-item">
+              <span class="control-label">Pause Mission</span>
+              <span class="control-key">P / ESC</span>
+            </div>
+            <div class="control-item">
+              <span class="control-label">Restart / Audio Mute</span>
+              <span class="control-key">R / M</span>
+            </div>
+          </div>
+
+          <div class="level-select-container">
+            <div class="level-select-label">Select Deployment Zone:</div>
+            <div class="level-select-btns">
+              <button class="btn btn-secondary btn-level" data-level="0">1: Ridge Outpost</button>
+              <button class="btn btn-secondary btn-level" data-level="1">2: Crosswind Valley</button>
+              <button class="btn btn-secondary btn-level" data-level="2">3: Eye of the Storm</button>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button id="btn-start" class="btn btn-primary">LAUNCH DRONE</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pause Overlay -->
+      <div id="overlay-pause" class="overlay hidden">
+        <div class="modal-card">
+          <span class="title-tag">Drone Standby</span>
+          <h2 class="game-title" style="font-size: 32px;">MISSION PAUSED</h2>
+          <p class="subtitle">Holding Position in Turbulence</p>
+
+          <div class="btn-row" style="margin-top: 20px;">
+            <button id="btn-resume" class="btn btn-primary">RESUME FLIGHT</button>
+            <button id="btn-pause-restart" class="btn btn-amber">RESTART MISSION</button>
+            <button id="btn-pause-mute" class="btn btn-secondary">AUDIO: ON</button>
+            <button id="btn-pause-title" class="btn btn-secondary">ABORT TO MENU</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Level Clear Overlay -->
+      <div id="overlay-level-clear" class="overlay hidden">
+        <div class="modal-card">
+          <span class="title-tag">Target Area Cleared</span>
+          <h2 class="game-title" style="font-size: 34px; color: var(--green-bright);">DROP ZONE SECURED</h2>
+          <p class="subtitle" id="lc-level-title">Ridge Outpost</p>
+
+          <div class="score-summary-card">
+            <div class="score-row">
+              <span class="control-label">Cargo Delivered:</span>
+              <span class="score-val" id="lc-crates-score">+0</span>
+            </div>
+            <div class="score-row">
+              <span class="control-label">Soft Drop & Precision:</span>
+              <span class="score-val" id="lc-precision-score">+0</span>
+            </div>
+            <div class="score-row">
+              <span class="control-label">Battery Efficiency Bonus:</span>
+              <span class="score-val" id="lc-battery-score">+0</span>
+            </div>
+            <div class="score-row">
+              <span class="control-label">Time Reserve Bonus:</span>
+              <span class="score-val" id="lc-time-score">+0</span>
+            </div>
+            <div class="score-row">
+              <span>Mission Total Score:</span>
+              <span class="score-total-val" id="lc-total-score">0</span>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button id="btn-next-level" class="btn btn-primary">NEXT MISSION</button>
+            <button id="btn-level-replay" class="btn btn-secondary">REPLAY LEVEL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Victory Overlay -->
+      <div id="overlay-victory" class="overlay hidden">
+        <div class="modal-card">
+          <span class="title-tag">Operational Mastery</span>
+          <h2 class="game-title" style="font-size: 36px; color: var(--amber-bright);">STORMLINE CLEARED</h2>
+          <p class="subtitle">All Critical Supplies Delivered Across All Storm Sectors</p>
+
+          <div class="victory-rank" id="vic-rank">S-RANK PILOT</div>
+
+          <div class="score-summary-card">
+            <div class="score-row">
+              <span>Final Grand Campaign Score:</span>
+              <span class="score-total-val" id="vic-total-score">0</span>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button id="btn-victory-replay" class="btn btn-primary">PLAY CAMPAIGN AGAIN</button>
+            <button id="btn-victory-title" class="btn btn-secondary">MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Over Overlay -->
+      <div id="overlay-game-over" class="overlay hidden">
+        <div class="modal-card">
+          <span class="title-tag">Telemetry Lost</span>
+          <h2 class="game-title" style="font-size: 34px; color: var(--red-bright);">MISSION FAILED</h2>
+          <div class="failure-reason" id="game-over-reason">DRONE HULL DESTROYED</div>
+
+          <div class="btn-row">
+            <button id="btn-game-over-retry" class="btn btn-amber">RETRY MISSION</button>
+            <button id="btn-game-over-title" class="btn btn-secondary">MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Game Scripts (Universal namespace window.Stormline, zero dependencies) -->
+  <script defer src="src/levels.js"></script>
+  <script defer src="src/audio.js"></script>
+  <script defer src="src/game.js"></script>
+  <script defer src="src/renderer.js"></script>
+  <script defer src="src/main.js"></script>
+</body>
+</html>

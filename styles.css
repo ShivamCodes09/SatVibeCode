@@ -1,0 +1,343 @@
+/* ==========================================================================
+   STORMLINE - Modern Tactical Aviation Aesthetics
+   Pure CSS, Zero External Dependencies, Responsive 16:9 Aspect Ratio
+   ========================================================================== */
+
+:root {
+  --bg-deep: #070a0f;
+  --bg-surface: rgba(14, 20, 30, 0.88);
+  --bg-card: rgba(19, 28, 44, 0.75);
+  --cyan-bright: #00f0ff;
+  --cyan-dim: #0099aa;
+  --amber-bright: #ffb700;
+  --amber-dim: #996e00;
+  --green-bright: #00ff88;
+  --red-bright: #ff3355;
+  --text-main: #f0f6fc;
+  --text-muted: #8b9bb4;
+  --border-cyan: rgba(0, 240, 255, 0.3);
+  --border-amber: rgba(255, 183, 0, 0.35);
+  --glow-cyan: 0 0 15px rgba(0, 240, 255, 0.35);
+  --glow-amber: 0 0 15px rgba(255, 183, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#viewport-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, #0e1420 0%, #05070a 100%);
+}
+
+#game-container {
+  position: relative;
+  width: 100vw;
+  height: 56.25vw; /* 16:9 ratio */
+  max-height: 100vh;
+  max-width: 177.78vh; /* 16:9 ratio */
+  background: #000;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  overflow: hidden;
+}
+
+#game-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* ==========================================================================
+   Overlay Panels
+   ========================================================================== */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 10, 15, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 24px;
+  z-index: 10;
+  transition: opacity 0.25s ease;
+  pointer-events: auto;
+}
+
+.overlay.hidden {
+  display: none !important;
+}
+
+.modal-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-cyan);
+  box-shadow: var(--glow-cyan), inset 0 0 30px rgba(0, 240, 255, 0.04);
+  border-radius: 8px;
+  padding: 32px 40px;
+  max-width: 680px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+}
+
+.modal-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan-bright), transparent);
+}
+
+.title-tag {
+  display: inline-block;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--cyan-bright);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding: 3px 10px;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 3px;
+}
+
+.game-title {
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+}
+
+.subtitle {
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.mission-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #ccd6e6;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Controls Grid */
+.controls-guide {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.control-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.control-key {
+  font-family: "Consolas", monospace;
+  background: rgba(0, 240, 255, 0.12);
+  color: var(--cyan-bright);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  font-weight: bold;
+  font-size: 11px;
+}
+
+.control-label {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* Action Buttons */
+.btn-row {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  border: 1px solid var(--border-cyan);
+  background: rgba(0, 240, 255, 0.1);
+  color: #ffffff;
+  outline: none;
+}
+
+.btn:hover {
+  background: var(--cyan-bright);
+  color: #06090f;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25) 0%, rgba(0, 153, 170, 0.35) 100%);
+  border-color: var(--cyan-bright);
+}
+
+.btn-amber {
+  border-color: var(--border-amber);
+  background: rgba(255, 183, 0, 0.12);
+}
+
+.btn-amber:hover {
+  background: var(--amber-bright);
+  color: #070a0f;
+  box-shadow: 0 0 20px rgba(255, 183, 0, 0.5);
+}
+
+.btn-secondary {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+/* Level Select Row */
+.level-select-container {
+  margin-bottom: 22px;
+}
+
+.level-select-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.level-select-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.btn-level {
+  font-size: 11px;
+  padding: 8px 14px;
+}
+
+/* Score Stats Card (Level Clear / Victory) */
+.score-summary-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.score-row:last-child {
+  border-bottom: none;
+  padding-top: 10px;
+  margin-top: 6px;
+  border-top: 1px solid rgba(0, 240, 255, 0.3);
+  font-weight: bold;
+}
+
+.score-val {
+  font-family: "Consolas", monospace;
+  color: var(--cyan-bright);
+  font-size: 14px;
+}
+
+.score-total-val {
+  font-family: "Consolas", monospace;
+  color: var(--amber-bright);
+  font-size: 20px;
+  text-shadow: 0 0 10px rgba(255, 183, 0, 0.5);
+}
+
+/* Status Badges */
+.failure-reason {
+  color: var(--red-bright);
+  font-family: "Consolas", monospace;
+  font-size: 15px;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  background: rgba(255, 51, 85, 0.12);
+  border: 1px solid rgba(255, 51, 85, 0.3);
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.victory-rank {
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--amber-bright);
+  text-shadow: 0 0 25px rgba(255, 183, 0, 0.7);
+  margin: 10px 0 16px 0;
+  letter-spacing: 4px;
+}
