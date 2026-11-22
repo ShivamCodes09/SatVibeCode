@@ -1,6 +1,6 @@
 # STORMLINE // Adverse Weather Emergency Rescue Drone
 
-> **Live Demo:** [https://your-username.github.io/stormline](https://your-username.github.io/stormline) *(Deploy via GitHub Pages or open index.html directly)*
+> **Live Demo:** [https://droneparcelgame.vercel.app/](https://droneparcelgame.vercel.app/) *(Deploy via GitHub on Vercel)*
 
 **STORMLINE** is an original 2D side-view browser game where you pilot a high-lift emergency rescue drone through severe storm fronts to transport essential cargo to designated drop pads.
 
